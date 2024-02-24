@@ -2,6 +2,8 @@ import { Box, Button, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalCont
 import dayjs from 'dayjs';
 import React, { ChangeEvent, useEffect, useState } from "react";
 import CurrencyInput from "react-currency-input-field";
+import { collection, addDoc } from "firebase/firestore"
+import { db } from "../firebase"
 
 interface ModalTreatmentProps {
     isOpen: boolean;
@@ -19,9 +21,19 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
     const [value, setValue] = useState<string | null>(null);
     const [mask, setMask] = useState([digitOrDot]);
 
-    const internalOnChange = (valueString: any) => {
-        console.log(valueString);
-    };
+    // Add Item
+    const addItem = async (e: { preventDefault: () => void; }) => {
+        e.preventDefault();
+        if (newItem.treatment !== '' && newItem.price !== '') {
+            await addDoc(collection(db, 'treatments'), {
+                treatment: newItem.treatment.trim(),
+                price: newItem.price,
+            });
+            setNewItem({ treatment: "", price: "" });
+        }
+    }
+
+    const [newItem, setNewItem] = useState({ treatment: '', price: '' });
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside" size="lg" isCentered>
@@ -33,26 +45,31 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
                     <Flex flexDir="column" gap={4}>
                         <Box>
                             <Text>Treatment</Text>
-                            <Input placeholder="e.g: John Smith" size="md" />
+                            <Input
+                                value={newItem.treatment}
+                                onChange={(e) => setNewItem({ ...newItem, treatment: e.target.value })}
+                                placeholder="e.g: John Smith"
+                                size="md" />
                         </Box>
                         <Box>
                             <Text>Price</Text>
                             <Flex alignItems="center">
                                 <Text marginRight="2" marginLeft="2">IDR</Text>
                                 <Input
+                                    defaultValue={newItem.price}
+                                    onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
                                     placeholder="Price..."
                                     textAlign="start"
                                     as={CurrencyInput}
                                     allowDecimals={true}
                                     decimalsLimit={2}
-                                    onValueChange={internalOnChange}
                                 />
                             </Flex>
                         </Box>
                     </Flex>
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme='blue'>Save</Button>
+                    <Button onClick={addItem} colorScheme='blue'>Save</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>
@@ -60,3 +77,7 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
 }
 
 export default ModalTreatment;
+function setItems(arg0: any[]) {
+    throw new Error("Function not implemented.");
+}
+
