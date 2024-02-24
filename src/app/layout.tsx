@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Providers } from './providers'
+import { Html } from "next/document";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
@@ -18,7 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <Providers>{children}</Providers>
+        <Suspense fallback={<Loading />}>
+          <Providers>{children}</Providers>
+        </Suspense>
       </body>
     </html>
   );

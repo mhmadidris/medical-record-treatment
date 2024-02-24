@@ -1,7 +1,8 @@
 import { Box, Button, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
-import dayjs from 'dayjs';
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import CurrencyInput from "react-currency-input-field";
+import { SingleDatepicker } from "chakra-dayzed-datepicker";
 
 interface ModalPatientsProps {
     isOpen: boolean;
@@ -15,18 +16,14 @@ const options = [
 ];
 
 const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose }) => {
-    const [currentDate, setCurrentDate] = useState<string>('');
-    const [scrollBehavior] = React.useState('inside');
-
-    useEffect(() => {
-        setCurrentDate(dayjs().format('YYYY-MM-DD'));
-    }, []);
+    const [newItem, setNewItem] = useState({ treatment: '', price: '' });
+    const [date, setDate] = useState(new Date());
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside" size="lg" isCentered>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Modal Patient</ModalHeader>
+                <ModalHeader>Patient</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <Flex flexDir="column" gap={4}>
@@ -40,12 +37,13 @@ const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose }) => {
                         </Box>
                         <Box>
                             <Text>Date</Text>
-                            <Input
-                                placeholder="Select Date and Time"
-                                size="md"
-                                type="date"
-                                value={currentDate}
-                                onChange={(e) => setCurrentDate(e.target.value)}
+                            <SingleDatepicker
+                                name="date-input"
+                                date={date}
+                                onDateChange={setDate}
+                                configs={{
+                                    dateFormat: 'EEEE, dd-MM-yyy'
+                                }}
                             />
                         </Box>
                         <Box>
@@ -63,6 +61,21 @@ const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose }) => {
                                 isMulti
                                 placeholder="Select medicine..."
                             />
+                        </Box>
+                        <Box>
+                            <Text>Cost</Text>
+                            <Flex alignItems="center">
+                                <Text marginRight="2" marginLeft="2">IDR</Text>
+                                <Input
+                                    defaultValue={newItem.price}
+                                    onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+                                    placeholder="e.g: 200.000"
+                                    textAlign="start"
+                                    as={CurrencyInput}
+                                    allowDecimals={true}
+                                    decimalsLimit={2}
+                                />
+                            </Flex>
                         </Box>
                     </Flex>
                 </ModalBody>

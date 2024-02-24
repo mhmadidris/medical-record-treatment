@@ -1,8 +1,8 @@
 "use client"
 
-import { Box, Text, VStack, Flex, Divider } from "@chakra-ui/react";
+import { Box, Text, VStack, Flex, Divider, IconButton, useDisclosure } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartPie, faUserGroup, faPills, faStethoscope } from "@fortawesome/free-solid-svg-icons";
+import { faChartPie, faUserGroup, faPills, faStethoscope, faPlus, faHouseChimneyMedical, faBars } from "@fortawesome/free-solid-svg-icons";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -15,11 +15,12 @@ const navLinks = [
 
 export default function Sidebar() {
     const pathName = usePathname();
+    const { isOpen, onToggle } = useDisclosure();
 
     const isActive = (href: string) => pathName.startsWith(href);
 
     return (
-        <Box
+        <><Box
             bg="white"
             w={250}
             minHeight="100vh"
@@ -29,12 +30,16 @@ export default function Sidebar() {
             left="0"
             boxShadow="xl"
             borderEndRadius={25}
+            display={{ base: isOpen ? "block" : "none", md: "block" }}
         >
             <Box marginY={2.5}>
                 <NextLink href="/" passHref>
-                    <Text textAlign="center" fontSize={24} fontWeight="bold">
-                        MEDICAL
-                    </Text>
+                    <Flex justifyContent="center" alignContent="center" alignItems="center">
+                        <FontAwesomeIcon icon={faHouseChimneyMedical} />
+                        <Text ms={2.5} textAlign="center" fontSize={24} fontWeight="bold">
+                            Medical
+                        </Text>
+                    </Flex>
                 </NextLink>
             </Box>
             <Divider />
@@ -50,7 +55,7 @@ export default function Sidebar() {
                             color={isActive(link.href) ? "#4474f7" : "#8b95a1"}
                             borderStartColor={isActive(link.href) ? "#5e8bf9" : "transparent"}
                             borderStartWidth={5}
-                            fontWeight={isActive(link.href) ? "bold" : "normal"}
+                            fontWeight={isActive(link.href) ? "bold" : "semibold"}
                             _hover={{ bg: "#ecf3fd", color: "#5e8bf9" }}
                         >
                             <Flex align="center" gap={2}>
@@ -61,6 +66,17 @@ export default function Sidebar() {
                     </NextLink>
                 ))}
             </VStack>
-        </Box>
+        </Box><IconButton
+                aria-label="Toggle Sidebar"
+                icon={<FontAwesomeIcon icon={faBars} />}
+                onClick={onToggle}
+                display={{ base: "block", md: "none" }}
+                position="fixed"
+                top="20px"
+                right="20px"
+                borderRadius="full"
+                bg="white"
+                color="black"
+                boxShadow="lg" /></>
     );
 }
