@@ -13,12 +13,12 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
     const [newItem, setNewItem] = useState<Treatment>({ treatment: '', price: 0 });
 
     const handleSave = async () => {
-        const createdTreatment = await createTreatment(newItem);
-        if (createdTreatment) {
+        try {
+            await createTreatment(newItem);
             setNewItem({ treatment: '', price: 0 });
             onClose();
-        } else {
-            // Handle error, maybe show an error message
+        } catch (error) {
+            console.error("Error saving treatment:", error);
         }
     };
 
@@ -44,7 +44,10 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
                                 <Text marginRight="2" marginLeft="2">IDR</Text>
                                 <Input
                                     defaultValue={newItem.price.toString()}
-                                    onChange={(e) => setNewItem({ ...newItem, price: parseFloat(e.target.value) })}
+                                    onChange={(e) => {
+                                        const cleanedValue = e.target.value.replace(/[^0-9.]/g, '');
+                                        setNewItem({ ...newItem, price: parseInt(cleanedValue) });
+                                    }}
                                     placeholder="e.g: 200000"
                                     textAlign="start"
                                     as={CurrencyInput}

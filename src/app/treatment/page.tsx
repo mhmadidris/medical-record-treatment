@@ -3,8 +3,7 @@
 import LayoutPanel from "@/components/Layouts";
 import { useDisclosure, Flex, Input, Button, Box } from "@chakra-ui/react";
 import ModalTreatment from "./modal";
-
-
+import TableTreatment from "./table";
 
 export default async function Treatment() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -37,7 +36,7 @@ export default async function Treatment() {
                 </Flex>
             </Box>
 
-            {/* <TableTreatment /> */}
+            <TableTreatment />
 
             <ModalTreatment isOpen={isOpen} onClose={onClose} />
         </LayoutPanel>

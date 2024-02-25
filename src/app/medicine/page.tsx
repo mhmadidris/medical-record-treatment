@@ -1,21 +1,47 @@
 "use client"
 
+import React, { useState, useEffect } from "react";
 import LayoutPanel from "@/components/Layouts";
 import { Box, Button, Card, CardBody, Container, Flex, Image, Input, SimpleGrid, Text, useDisclosure } from "@chakra-ui/react";
 import ModalMedicine from "./modal";
 import { faEye, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-const cardMedicine = [
-    { name: "Paracetamol", price: "200.000", stock: 8, image: "https://source.unsplash.com/random/0" },
-    { name: "Betadine", price: "760.000", stock: 913, image: "https://source.unsplash.com/random/1" },
-    { name: "Vitamin C", price: "30.000", stock: 82, image: "https://source.unsplash.com/random/2" },
-    { name: "Sakatonik ABC", price: "70.000", stock: 21, image: "https://source.unsplash.com/random/3" },
-    { name: "Handsaplast", price: "90.000", stock: 65, image: "https://source.unsplash.com/random/4" },
-];
+import { deleteMedicine, getAllMedicines } from "@/controllers/medicineController";
+import { Medicine } from "@/models/Medicine";
+import { moneyFormatter } from "../../providers/Currency";
 
 export default function Medicine() {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [loading, setLoading] = useState<boolean>(true);
+    const [medicines, setMedicines] = useState<Medicine[]>([]);
+
+    useEffect(() => {
+        async function fetchMedicines() {
+            try {
+                const medicinesData = await getAllMedicines();
+                setMedicines(medicinesData);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching medicines:", error);
+                setLoading(false);
+            }
+        }
+
+        fetchMedicines();
+    }, []);
+
+    const handleDelete = async (medicineId: any) => {
+        try {
+            const success = await deleteMedicine(medicineId);
+            if (success) {
+                setMedicines(prevMedicines => prevMedicines.filter(medicine => medicine.id !== medicineId));
+            } else {
+
+            }
+        } catch (error) {
+            console.error("Error deleting medicine:", error);
+        }
+    };
 
     return (
         <LayoutPanel>
@@ -39,20 +65,22 @@ export default function Medicine() {
                 spacingX='25px'
                 spacingY='20px'
             >
-                {cardMedicine.map((medicine, index) => (
+                {medicines.map((medicine, index) => (
                     <Card key={index}>
                         <CardBody>
                             <Image src={medicine.image} borderRadius={5} alt="Image" w="100%" h={150} objectFit="cover" loading="lazy" />
                             <Flex flexDir="column" marginY={2} gap={1}>
-                                <Text fontWeight="bold" fontSize={16}>{medicine.name}</Text>
-                                <Text fontWeight="medium" fontSize={14}>Rp {medicine.price}</Text>
+                                <Text fontWeight="bold" fontSize={16}>{medicine.title}</Text>
+                                <Text fontWeight="medium" fontSize={14}>
+                                    {moneyFormatter(medicine.price, "IDR", 0)}
+                                </Text>
                             </Flex>
                             <Flex justifyContent="space-around" marginTop={2.5}>
                                 <Button backgroundColor="#4474f7" color="white" size="sm">
                                     <FontAwesomeIcon icon={faPen} />
                                     <Text ms={2}>Edit</Text>
                                 </Button>
-                                <Button backgroundColor="red" color="white" size="sm">
+                                <Button backgroundColor="red" color="white" size="sm" onClick={handleDelete}>
                                     <FontAwesomeIcon icon={faTrash} />
                                     <Text ms={2}>Delete</Text>
                                 </Button>
