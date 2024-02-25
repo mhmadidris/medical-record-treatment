@@ -8,7 +8,6 @@ interface ModalMedicineProps {
 }
 
 const ModalMedicine: React.FC<ModalMedicineProps> = ({ isOpen, onClose }) => {
-    const [currentDate, setCurrentDate] = useState<string>('');
     const [selectedImage, setSelectedImage] = useState<string | ArrayBuffer | null>(null);
     const [selectedFileName, setSelectedFileName] = useState<string>('');
     const [newItem, setNewItem] = useState({ treatment: '', price: '' });

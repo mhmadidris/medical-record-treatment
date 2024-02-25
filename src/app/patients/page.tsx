@@ -15,20 +15,32 @@ export default function Patients() {
 
     return (
         <LayoutPanel>
-            <Box>
-                <Flex alignContent="space-between" gap={5}>
-                    <Input placeholder='Search Patient ID / Patient Name' size='md' backgroundColor="white" color="black" shadow="xs" />
+            <Box width={{ base: '100%', md: 'auto' }}>
+                <Flex
+                    direction={{ base: "column-reverse", md: "row" }}
+                    align={{ base: "stretch", md: "center" }}
+                    justify={{ base: "stretch", md: "space-between" }}
+                    gap={5}
+                >
+                    <Input placeholder='Search Patient ID / Patient Name' size='md' backgroundColor="white" color="black" shadow="xs" marginBottom={{ base: 5, md: 0 }} />
                     <Button onClick={onOpen} backgroundColor="#6488ea" size="md" boxShadow="lg">
                         Add Patients
                     </Button>
                 </Flex>
             </Box>
 
-            <TableContainer marginTop={5} backgroundColor="white" borderRadius={10} boxShadow="md">
-                <Table size='md'>
+            <TableContainer
+                marginTop={5}
+                backgroundColor="white"
+                borderRadius={10}
+                boxShadow="md"
+                overflowX={{ base: 'auto', md: 'hidden' }}
+                width={{ base: '100%', md: 'auto' }}
+            >
+                <Table size={{ base: 'sm', md: 'md' }}>
                     <Thead backgroundColor="#ecf3fd">
                         <Tr>
-                            <Th width={1} fontWeight="bold" fontSize={16} textAlign="center">#</Th>
+                            <Th width={{ base: '10%', md: '5%' }} fontWeight="bold" fontSize={16} textAlign="center">#</Th>
                             <Th fontWeight="bold" fontSize={16}>Name</Th>
                             <Th fontWeight="bold" fontSize={16}>Date</Th>
                             <Th fontWeight="bold" fontSize={16}>Cost</Th>
@@ -37,7 +49,7 @@ export default function Patients() {
                     </Thead>
                     <Tbody>
                         <Tr>
-                            <Td width={1} fontWeight="bold" fontSize={14} textAlign="center">1</Td>
+                            <Td width={{ base: '10%', md: '5%' }} fontWeight="bold" fontSize={14} textAlign="center">1</Td>
                             <Td>
                                 <Text fontWeight="semibold" fontSize={16}>
                                     John Smith
@@ -52,8 +64,8 @@ export default function Patients() {
                             <Td fontWeight="normal" fontSize={14}>
                                 Rp 25.000
                             </Td>
-                            <Td fontWeight="bold" fontSize={14} textAlign="center" w={100}>
-                                <Flex alignContent="space-between" gap={3}>
+                            <Td fontWeight="bold" fontSize={14} textAlign="center">
+                                <Flex justifyContent="center" alignContent="center" gap={3}>
                                     <Button backgroundColor="#5e8bf9" color="white" size="sm" ref={btnRef} colorScheme='teal' onClick={onOpenDrawer}>
                                         <FontAwesomeIcon icon={faEye} />
                                     </Button>

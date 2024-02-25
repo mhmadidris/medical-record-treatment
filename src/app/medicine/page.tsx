@@ -15,12 +15,17 @@ const cardMedicine = [
 ];
 
 export default function Medicine() {
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
         <LayoutPanel>
-            <Box>
-                <Flex alignContent="space-between" gap={5}>
+            <Box width={{ base: '100%', md: 'auto' }}>
+                <Flex
+                    direction={{ base: "column-reverse", md: "row" }}
+                    align={{ base: "stretch", md: "center" }}
+                    justify={{ base: "stretch", md: "space-between" }}
+                    gap={5}
+                >
                     <Input placeholder='Search Medicine' size='md' backgroundColor="white" color="black" shadow="xs" />
                     <Button onClick={onOpen} backgroundColor="#6488ea" size="md" boxShadow="lg">
                         Add Medicine
@@ -28,9 +33,14 @@ export default function Medicine() {
                 </Flex>
             </Box>
 
-            <SimpleGrid marginTop={5} columns={4} spacingX='25px' spacingY='20px'>
+            <SimpleGrid
+                marginTop={5}
+                columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+                spacingX='25px'
+                spacingY='20px'
+            >
                 {cardMedicine.map((medicine, index) => (
-                    <Card>
+                    <Card key={index}>
                         <CardBody>
                             <Image src={medicine.image} borderRadius={5} alt="Image" w="100%" h={150} objectFit="cover" loading="lazy" />
                             <Flex flexDir="column" marginY={2} gap={1}>
@@ -51,6 +61,7 @@ export default function Medicine() {
                     </Card>
                 ))}
             </SimpleGrid>
+
 
             <ModalMedicine isOpen={isOpen} onClose={onClose} />
         </LayoutPanel>

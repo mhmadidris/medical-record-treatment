@@ -1,4 +1,5 @@
 export interface Treatment {
-    id: string;
+    id?: string;
     treatment: string;
+    price: number;
 }

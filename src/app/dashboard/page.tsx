@@ -1,5 +1,6 @@
+"use client"
+
 import LayoutPanel from "@/components/Layouts";
-import Sidebar from "@/components/Sidebar"
 import { Box, Center, Container, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import { faPills, faStethoscope, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

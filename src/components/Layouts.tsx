@@ -9,7 +9,7 @@ export default function LayoutPanel({
     return (
         <Flex minH="100vh" style={{ backgroundColor: "#f6f7fb" }}>
             <Sidebar />
-            <Box flex="1" marginStart={{ base: 0, md: 250 }} marginY={5} paddingX={5}>{children}</Box>
+            <Box flex="1" w={100} marginStart={{ base: 0, md: 250 }} marginY={{ base: 100, md: 5 }} paddingX={5}>{children}</Box>
         </Flex>
     );
 }

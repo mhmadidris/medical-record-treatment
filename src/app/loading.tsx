@@ -1,3 +1,11 @@
+import { Center, CircularProgress, Box } from "@chakra-ui/react";
+
 export default function Loading() {
-    return <h1>Loading...</h1>;
+    return (
+        <Box w="100vw" h="100vh">
+            <Center>
+                <CircularProgress color="red" />
+            </Center>
+        </Box>
+    );
 }

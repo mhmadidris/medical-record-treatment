@@ -1,6 +1,8 @@
 import { Box, Button, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import CurrencyInput from "react-currency-input-field";
+import { createTreatment } from "../../controllers/treatmentController";
+import { Treatment } from "../../models/Treatment";
 
 interface ModalTreatmentProps {
     isOpen: boolean;
@@ -8,9 +10,17 @@ interface ModalTreatmentProps {
 }
 
 const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
-    const digitOrDot = /([0-9]|\.)/;
+    const [newItem, setNewItem] = useState<Treatment>({ treatment: '', price: 0 });
 
-    const [newItem, setNewItem] = useState({ treatment: '', price: '' });
+    const handleSave = async () => {
+        const createdTreatment = await createTreatment(newItem);
+        if (createdTreatment) {
+            setNewItem({ treatment: '', price: 0 });
+            onClose();
+        } else {
+            // Handle error, maybe show an error message
+        }
+    };
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside" size="lg" isCentered>
@@ -33,9 +43,9 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
                             <Flex alignItems="center">
                                 <Text marginRight="2" marginLeft="2">IDR</Text>
                                 <Input
-                                    defaultValue={newItem.price}
-                                    onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
-                                    placeholder="e.g: 200.000"
+                                    defaultValue={newItem.price.toString()}
+                                    onChange={(e) => setNewItem({ ...newItem, price: parseFloat(e.target.value) })}
+                                    placeholder="e.g: 200000"
                                     textAlign="start"
                                     as={CurrencyInput}
                                     allowDecimals={true}
@@ -46,7 +56,7 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
                     </Flex>
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme='blue'>Save</Button>
+                    <Button colorScheme='blue' onClick={handleSave}>Save</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>
@@ -54,7 +64,3 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
 }
 
 export default ModalTreatment;
-function setItems(arg0: any[]) {
-    throw new Error("Function not implemented.");
-}
-
