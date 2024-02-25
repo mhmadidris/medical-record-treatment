@@ -29,7 +29,6 @@ const TableTreatment: React.FC = () => {
         try {
             const success = await deleteTreatment(treatmentId);
             if (success) {
-                // Treatment deleted successfully, update treatments state
                 setTreatments(prevTreatments => prevTreatments.filter(treatment => treatment.id !== treatmentId));
             } else {
 
