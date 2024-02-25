@@ -9,6 +9,7 @@ import { Treatment } from "@/models/Treatment";
 import { getAllTreatments } from "@/controllers/treatmentController";
 import { Patient } from "@/models/Patient";
 import { createPatient } from "@/controllers/patientController";
+import ToastDisplay from "@/components/Toast";
 
 interface ModalPatientsProps {
     isOpen: boolean;
@@ -22,6 +23,7 @@ const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose, updatePa
     const [newItem, setNewItem] = useState<Patient>({ patientID: '', patientName: '', date: new Date, treatmentIds: [], medicineIds: [], cost: 0 });
     const [date, setDate] = useState(new Date().toLocaleDateString("id-ID", { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }));
     const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
         async function fetchTreatments() {
@@ -56,16 +58,62 @@ const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose, updatePa
         label: medicine.title,
     }));
 
+    const validateForm = () => {
+        let isValid = true;
+        const errorsCopy = { ...errors };
+
+        if (!newItem.patientID?.trim()) {
+            errorsCopy.patientID = "Patient ID is required";
+            isValid = false;
+        } else {
+            delete errorsCopy.patientID;
+        }
+
+        if (!newItem.patientName?.trim()) {
+            errorsCopy.patientName = "Patient Name is required";
+            isValid = false;
+        } else {
+            delete errorsCopy.patientName;
+        }
+
+        if (newItem.treatmentIds?.length === 0) {
+            errorsCopy.treatmentIds = "Please select at least one treatment";
+            isValid = false;
+        } else {
+            delete errorsCopy.treatmentIds;
+        }
+
+        if (newItem.medicineIds?.length === 0) {
+            errorsCopy.medicineIds = "Please select at least one medicine";
+            isValid = false;
+        } else {
+            delete errorsCopy.medicineIds;
+        }
+
+        if (newItem.cost <= 0) {
+            errorsCopy.cost = "Cost must be greater than zero";
+            isValid = false;
+        } else {
+            delete errorsCopy.cost;
+        }
+
+        setErrors(errorsCopy);
+        return isValid;
+    };
+
     const handleSave = async () => {
         setIsLoading(true);
         try {
-            await createPatient({
-                ...newItem,
-                date: new Date(date)
-            });
-            updatePatientsList();
-            setNewItem({ patientID: '', patientName: '', date: new Date(), treatmentIds: [], medicineIds: [], cost: 0 });
-            onClose();
+            if (validateForm()) {
+                await createPatient({
+                    ...newItem,
+                    date: new Date(date)
+                });
+                updatePatientsList();
+                setNewItem({ patientID: '', patientName: '', date: new Date(), treatmentIds: [], medicineIds: [], cost: 0 });
+
+                onClose();
+            }
         } catch (error) {
             console.error("Error saving patient:", error);
         } finally {
@@ -84,10 +132,12 @@ const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose, updatePa
                         <Box>
                             <Text>Patient ID</Text>
                             <Input placeholder="e.g: P-1234" size="md" onChange={(e) => setNewItem({ ...newItem, patientID: e.target.value })} />
+                            {errors.patientID && <Text color="red">{errors.patientID}</Text>}
                         </Box>
                         <Box>
                             <Text>Patient Name</Text>
                             <Input placeholder="e.g: John Smith" size="md" onChange={(e) => setNewItem({ ...newItem, patientName: e.target.value })} />
+                            {errors.patientName && <Text color="red">{errors.patientName}</Text>}
                         </Box>
                         <Box>
                             <Text>Date</Text>
@@ -111,6 +161,7 @@ const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose, updatePa
                                     setNewItem({ ...newItem, treatmentIds: selectedTreatmentIds });
                                 }}
                             />
+                            {errors.treatmentIds && <Text color="red">{errors.treatmentIds}</Text>}
                         </Box>
                         <Box>
                             <Text>Medicine</Text>
@@ -123,6 +174,7 @@ const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose, updatePa
                                     setNewItem({ ...newItem, medicineIds: selectedMedicineIds });
                                 }}
                             />
+                            {errors.medicineIds && <Text color="red">{errors.medicineIds}</Text>}
                         </Box>
                         <Box>
                             <Text>Cost</Text>
@@ -141,6 +193,7 @@ const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose, updatePa
                                     decimalsLimit={2}
                                 />
                             </Flex>
+                            {errors.cost && <Text color="red">{errors.cost}</Text>}
                         </Box>
                     </Flex>
                 </ModalBody>

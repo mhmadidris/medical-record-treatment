@@ -18,6 +18,7 @@ export default function Patients() {
     const { isOpen: isOpenDrawer, onOpen: onOpenDrawer, onClose: onCloseDrawer } = useDisclosure();
     const [loading, setLoading] = useState<boolean>(true);
     const btnRef = useRef<HTMLButtonElement>(null);
+    const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
 
     const [patients, setPatients] = useState<Patient[]>([]);
 
@@ -51,6 +52,11 @@ export default function Patients() {
 
     const updatePatientsList = () => {
         patients;
+    };
+
+    const handleDetail = (patientId: any) => {
+        setSelectedPatientId(patientId);
+        onOpenDrawer();
     };
 
     return (
@@ -119,7 +125,7 @@ export default function Patients() {
                                     </Td>
                                     <Td fontWeight="bold" fontSize={14} textAlign="center">
                                         <Flex justifyContent="center" alignContent="center" gap={3}>
-                                            <Button backgroundColor="#5e8bf9" color="white" size="sm" ref={btnRef} colorScheme='teal' onClick={onOpenDrawer}>
+                                            <Button backgroundColor="#5e8bf9" color="white" size="sm" ref={btnRef} colorScheme='teal' onClick={() => handleDetail(patient.id)} >
                                                 <FontAwesomeIcon icon={faEye} />
                                             </Button>
                                             <Button backgroundColor="red" color="white" size="sm" onClick={() => handleDelete(patient.id)}>
@@ -135,7 +141,7 @@ export default function Patients() {
             }
 
             <ModalPatients isOpen={isOpen} onClose={onClose} updatePatientsList={updatePatientsList} />
-            <DrawerPatients isOpen={isOpenDrawer} onClose={onCloseDrawer} />
+            <DrawerPatients isOpen={isOpenDrawer} onClose={onCloseDrawer} patientId={selectedPatientId} />
         </LayoutPanel>
     );
 }

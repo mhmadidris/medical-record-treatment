@@ -30,6 +30,7 @@ const ModalMedicine: React.FC<ModalMedicineProps> = ({ isOpen, onClose }) => {
     const [selectedFileName, setSelectedFileName] = useState<string>('');
     const [newItem, setNewItem] = useState<Medicine>({ image: '', title: '', stock: 0, price: 0 });
     const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files && e.target.files[0];
@@ -42,10 +43,12 @@ const ModalMedicine: React.FC<ModalMedicineProps> = ({ isOpen, onClose }) => {
     const handleSave = async () => {
         setIsLoading(true);
         try {
-            await createMedicine(newItem, selectedImage);
-            setNewItem({ image: '', title: '', stock: 0, price: 0 });
-            setSelectedImage(null);
-            onClose();
+            if (validateForm()) {
+                await createMedicine(newItem, selectedImage);
+                setNewItem({ image: '', title: '', stock: 0, price: 0 });
+                setSelectedImage(null);
+                onClose();
+            }
         } catch (error) {
             console.error("Error saving medicine:", error);
         } finally {
@@ -57,11 +60,41 @@ const ModalMedicine: React.FC<ModalMedicineProps> = ({ isOpen, onClose }) => {
         step: 1,
         defaultValue: 1,
         min: 1,
+        inputMode: "decimal"
     });
 
     const inc = getIncrementButtonProps();
     const dec = getDecrementButtonProps();
     const input = getInputProps();
+
+    const validateForm = () => {
+        let isValid = true;
+        const errorsCopy = { ...errors };
+
+        if (!selectedFileName) {
+            errorsCopy.image = "Image is required";
+            isValid = false;
+        } else {
+            delete errorsCopy.image;
+        }
+
+        if (!newItem.title.trim()) {
+            errorsCopy.title = "Medicine Name is required";
+            isValid = false;
+        } else {
+            delete errorsCopy.title;
+        }
+
+        if (newItem.price <= 0) {
+            errorsCopy.price = "Price must be greater than zero";
+            isValid = false;
+        } else {
+            delete errorsCopy.price;
+        }
+
+        setErrors(errorsCopy);
+        return isValid;
+    };
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} isCentered scrollBehavior="inside">
@@ -80,10 +113,12 @@ const ModalMedicine: React.FC<ModalMedicineProps> = ({ isOpen, onClose }) => {
                                 </Button>
                             </div>
                         </Box>
+                        {errors.image && <Text color="red">{errors.image}</Text>}
 
                         <Box>
                             <Text>Medicine Name</Text>
                             <Input placeholder="e.g: Paracetamol" size="md" onChange={(e) => setNewItem({ ...newItem, title: e.target.value })} />
+                            {errors.title && <Text color="red">{errors.title}</Text>}
                         </Box>
 
                         <Box>
@@ -112,6 +147,7 @@ const ModalMedicine: React.FC<ModalMedicineProps> = ({ isOpen, onClose }) => {
                                     decimalsLimit={2}
                                 />
                             </Flex>
+                            {errors.price && <Text color="red">{errors.price}</Text>}
                         </Box>
                     </Flex>
                 </ModalBody>

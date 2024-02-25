@@ -15,11 +15,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+    const [loading, setLoading] = useState<boolean>(true);
+
     const [medicines, setMedicines] = useState<Medicine[]>([]);
     const [patients, setPatients] = useState<Patient[]>([]);
     const [treatments, setTreatments] = useState<Treatment[]>([]);
-
-    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         async function fetchMedicines() {

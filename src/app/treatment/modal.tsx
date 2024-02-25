@@ -11,15 +11,40 @@ interface ModalTreatmentProps {
 
 const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
     const [newItem, setNewItem] = useState<Treatment>({ treatment: '', price: 0 });
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const handleSave = async () => {
         try {
-            await createTreatment(newItem);
-            setNewItem({ treatment: '', price: 0 });
-            onClose();
+            if (validateForm()) {
+                await createTreatment(newItem);
+                setNewItem({ treatment: '', price: 0 });
+                onClose();
+            }
         } catch (error) {
             console.error("Error saving treatment:", error);
         }
+    };
+
+    const validateForm = () => {
+        let isValid = true;
+        const errorsCopy = { ...errors };
+
+        if (!newItem.treatment.trim()) {
+            errorsCopy.treatment = "Treatment is required";
+            isValid = false;
+        } else {
+            delete errorsCopy.treatment;
+        }
+
+        if (newItem.price <= 0) {
+            errorsCopy.price = "Price must be greater than zero";
+            isValid = false;
+        } else {
+            delete errorsCopy.price;
+        }
+
+        setErrors(errorsCopy);
+        return isValid;
     };
 
     return (
@@ -37,6 +62,7 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
                                 onChange={(e) => setNewItem({ ...newItem, treatment: e.target.value })}
                                 placeholder="e.g: Medication"
                                 size="md" />
+                            {errors.treatment && <Text color="red">{errors.treatment}</Text>}
                         </Box>
                         <Box>
                             <Text>Price</Text>
@@ -46,7 +72,7 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
                                     defaultValue={newItem.price.toString()}
                                     onChange={(e) => {
                                         const cleanedValue = e.target.value.replace(/[^0-9.]/g, '');
-                                        setNewItem({ ...newItem, price: parseInt(cleanedValue) });
+                                        setNewItem({ ...newItem, price: parseFloat(cleanedValue) });
                                     }}
                                     placeholder="e.g: 200000"
                                     textAlign="start"
@@ -55,6 +81,7 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
                                     decimalsLimit={2}
                                 />
                             </Flex>
+                            {errors.price && <Text color="red">{errors.price}</Text>}
                         </Box>
                     </Flex>
                 </ModalBody>

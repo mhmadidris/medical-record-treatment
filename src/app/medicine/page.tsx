@@ -87,7 +87,7 @@ export default function Medicine() {
                                         <FontAwesomeIcon icon={faPen} />
                                         <Text ms={2}>Edit</Text>
                                     </Button>
-                                    <Button backgroundColor="red" color="white" size="sm" onClick={handleDelete}>
+                                    <Button backgroundColor="red" color="white" size="sm" onClick={() => handleDelete(medicine.id)}>
                                         <FontAwesomeIcon icon={faTrash} />
                                         <Text ms={2}>Delete</Text>
                                     </Button>

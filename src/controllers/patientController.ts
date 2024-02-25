@@ -51,3 +51,19 @@ export async function deletePatient(patientId: string): Promise<boolean> {
         return false;
     }
 }
+
+export async function getPatientDetail(patientId: string): Promise<Patient | null> {
+    try {
+        const res = await fetch(`/api/patient/detail?patientId=${patientId}`);
+        if (res.ok) {
+            const responseData = await res.json();
+            return responseData.patient as Patient;
+        } else {
+            console.error("Failed to fetch patient detail:", res.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching patient detail:", error);
+        return null;
+    }
+}

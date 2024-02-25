@@ -5,7 +5,9 @@ import { useDisclosure, Flex, Input, Button, Box } from "@chakra-ui/react";
 import ModalTreatment from "./modal";
 import TableTreatment from "./table";
 
-export default async function Treatment() {
+
+
+export default function Treatment() {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
