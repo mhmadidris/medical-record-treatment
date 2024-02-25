@@ -23,9 +23,10 @@ import { Medicine } from "@/models/Medicine";
 interface ModalMedicineProps {
     isOpen: boolean;
     onClose: () => void;
+    refreshData: () => void;
 }
 
-const ModalMedicine: React.FC<ModalMedicineProps> = ({ isOpen, onClose }) => {
+const ModalMedicine: React.FC<ModalMedicineProps> = ({ isOpen, onClose, refreshData }) => {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [selectedFileName, setSelectedFileName] = useState<string>('');
     const [newItem, setNewItem] = useState<Medicine>({ image: '', title: '', stock: 0, price: 0 });
@@ -44,10 +45,14 @@ const ModalMedicine: React.FC<ModalMedicineProps> = ({ isOpen, onClose }) => {
         setIsLoading(true);
         try {
             if (validateForm()) {
-                await createMedicine(newItem, selectedImage);
+                await createMedicine({
+                    ...newItem,
+                    stock: parseInt(input.value)
+                }, selectedImage);
                 setNewItem({ image: '', title: '', stock: 0, price: 0 });
                 setSelectedImage(null);
                 onClose();
+                refreshData();
             }
         } catch (error) {
             console.error("Error saving medicine:", error);

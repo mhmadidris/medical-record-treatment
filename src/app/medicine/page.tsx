@@ -18,28 +18,28 @@ export default function Medicine() {
     const [medicines, setMedicines] = useState<Medicine[]>([]);
 
     useEffect(() => {
-        async function fetchMedicines() {
-            try {
-                const medicinesData = await getAllMedicines();
-                setMedicines(medicinesData);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching medicines:", error);
-                setLoading(false);
-            }
-        }
-
         fetchMedicines();
     }, []);
+
+    const fetchMedicines = async () => {
+        try {
+            setLoading(true);
+            const medicinesData = await getAllMedicines();
+            setMedicines(medicinesData);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching medicines:", error);
+            setLoading(false);
+        }
+    }
 
     const handleDelete = async (medicineId: any) => {
         try {
             const success = await deleteMedicine(medicineId);
             if (success) {
                 setMedicines(prevMedicines => prevMedicines.filter(medicine => medicine.id !== medicineId));
-            } else {
-
             }
+            fetchMedicines();
         } catch (error) {
             console.error("Error deleting medicine:", error);
         }
@@ -98,8 +98,7 @@ export default function Medicine() {
                 </SimpleGrid>
             }
 
-
-            <ModalMedicine isOpen={isOpen} onClose={onClose} />
+            <ModalMedicine isOpen={isOpen} onClose={onClose} refreshData={fetchMedicines} />
         </LayoutPanel>
     );
 }

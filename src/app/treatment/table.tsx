@@ -7,34 +7,41 @@ import { getAllTreatments, deleteTreatment } from "@/controllers/treatmentContro
 import { Treatment } from "@/models/Treatment";
 import NoData from "@/components/No-Data";
 import Loading from "@/components/Loading";
+import ModalTreatment from "./modal";
 
-const TableTreatment: React.FC = () => {
+interface ModalTreatmentProps {
+    isOpen: boolean;
+    onClose: () => void;
+    refreshData?: () => void;
+}
+
+const TableTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose, refreshData }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [treatments, setTreatments] = useState<Treatment[]>([]);
 
     useEffect(() => {
-        async function fetchTreatments() {
-            try {
-                const treatmentsData = await getAllTreatments();
-                setTreatments(treatmentsData);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching treatments:", error);
-                setLoading(false);
-            }
-        }
-
         fetchTreatments();
     }, []);
+
+    const fetchTreatments = async () => {
+        try {
+            setLoading(true);
+            const treatmentsData = await getAllTreatments();
+            setTreatments(treatmentsData);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching treatments:", error);
+            setLoading(false);
+        }
+    };
 
     const handleDelete = async (treatmentId: any) => {
         try {
             const success = await deleteTreatment(treatmentId);
             if (success) {
                 setTreatments(prevTreatments => prevTreatments.filter(treatment => treatment.id !== treatmentId));
-            } else {
-
             }
+            fetchTreatments();
         } catch (error) {
             console.error("Error deleting treatment:", error);
         }
@@ -92,6 +99,7 @@ const TableTreatment: React.FC = () => {
                     </Table>
                 </TableContainer>
             )}
+            <ModalTreatment isOpen={isOpen} onClose={onClose} refreshData={fetchTreatments} />
         </>
     );
 }

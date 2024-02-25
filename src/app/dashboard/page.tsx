@@ -2,14 +2,13 @@
 
 import LayoutPanel from "@/components/Layouts";
 import Loading from "@/components/Loading";
-import NoData from "@/components/No-Data";
 import { getAllMedicines } from "@/controllers/medicineController";
 import { getAllPatients } from "@/controllers/patientController";
 import { getAllTreatments } from "@/controllers/treatmentController";
 import { Medicine } from "@/models/Medicine";
 import { Patient } from "@/models/Patient";
 import { Treatment } from "@/models/Treatment";
-import { Box, Center, Container, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import { faPills, faStethoscope, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
@@ -22,48 +21,31 @@ export default function Dashboard() {
     const [treatments, setTreatments] = useState<Treatment[]>([]);
 
     useEffect(() => {
-        async function fetchMedicines() {
-            try {
-                const medicinesData = await getAllMedicines();
-                setMedicines(medicinesData);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching medicines:", error);
-                setLoading(false);
-            }
-        }
-
-        async function fetchPatients() {
-            try {
-                const patientsData = await getAllPatients();
-                setPatients(patientsData);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching patients:", error);
-                setLoading(false);
-            }
-        }
-
-        async function fetchTreatments() {
-            try {
-                const treatmentsData = await getAllTreatments();
-                setTreatments(treatmentsData);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching treatments:", error);
-                setLoading(false);
-            }
-        }
-
-        fetchPatients();
-        fetchMedicines();
-        fetchTreatments();
+        fetchData();
     }, []);
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const medicinesData = await getAllMedicines();
+            setMedicines(medicinesData);
+
+            const patientsData = await getAllPatients();
+            setPatients(patientsData);
+
+            const treatmentsData = await getAllTreatments();
+            setTreatments(treatmentsData);
+
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            setLoading(false);
+        }
+    }
 
     return (
         <LayoutPanel>
             <Text mb={2.5} fontWeight="bold" fontSize={24}>Dashboard</Text>
-
             {loading ? (
                 <Loading />
             ) :

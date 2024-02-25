@@ -23,35 +23,32 @@ export default function Patients() {
     const [patients, setPatients] = useState<Patient[]>([]);
 
     useEffect(() => {
-        async function fetchPatients() {
-            try {
-                const patientsData = await getAllPatients();
-                setPatients(patientsData);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching patients:", error);
-                setLoading(false);
-            }
-        }
-
         fetchPatients();
     }, []);
+
+    const fetchPatients = async () => {
+        setLoading(true);
+        try {
+            const patientsData = await getAllPatients();
+            setPatients(patientsData);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching patients:", error);
+            setLoading(false);
+        }
+    }
 
     const handleDelete = async (patientId: any) => {
         try {
             const success = await deletePatient(patientId);
             if (success) {
                 setPatients(prevPatients => prevPatients.filter(patient => patient.id !== patientId));
-            } else {
-
             }
+
+            fetchPatients();
         } catch (error) {
             console.error("Error deleting patient:", error);
         }
-    };
-
-    const updatePatientsList = () => {
-        patients;
     };
 
     const handleDetail = (patientId: any) => {
@@ -140,7 +137,7 @@ export default function Patients() {
                 </TableContainer>
             }
 
-            <ModalPatients isOpen={isOpen} onClose={onClose} updatePatientsList={updatePatientsList} />
+            <ModalPatients isOpen={isOpen} onClose={onClose} refreshData={fetchPatients} />
             <DrawerPatients isOpen={isOpenDrawer} onClose={onCloseDrawer} patientId={selectedPatientId} />
         </LayoutPanel>
     );

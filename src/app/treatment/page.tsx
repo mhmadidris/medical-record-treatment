@@ -2,10 +2,7 @@
 
 import LayoutPanel from "@/components/Layouts";
 import { useDisclosure, Flex, Input, Button, Box } from "@chakra-ui/react";
-import ModalTreatment from "./modal";
 import TableTreatment from "./table";
-
-
 
 export default function Treatment() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -38,9 +35,7 @@ export default function Treatment() {
                 </Flex>
             </Box>
 
-            <TableTreatment />
-
-            <ModalTreatment isOpen={isOpen} onClose={onClose} />
+            <TableTreatment isOpen={isOpen} onClose={onClose} />
         </LayoutPanel>
     );
 }

@@ -14,10 +14,10 @@ import ToastDisplay from "@/components/Toast";
 interface ModalPatientsProps {
     isOpen: boolean;
     onClose: () => void;
-    updatePatientsList: () => void;
+    refreshData: () => void;
 }
 
-const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose, updatePatientsList }) => {
+const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose, refreshData }) => {
     const [treatments, setTreatments] = useState<Treatment[]>([]);
     const [medicines, setMedicines] = useState<Medicine[]>([]);
     const [newItem, setNewItem] = useState<Patient>({ patientID: '', patientName: '', date: new Date, treatmentIds: [], medicineIds: [], cost: 0 });
@@ -109,10 +109,9 @@ const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose, updatePa
                     ...newItem,
                     date: new Date(date)
                 });
-                updatePatientsList();
                 setNewItem({ patientID: '', patientName: '', date: new Date(), treatmentIds: [], medicineIds: [], cost: 0 });
-
                 onClose();
+                refreshData();
             }
         } catch (error) {
             console.error("Error saving patient:", error);

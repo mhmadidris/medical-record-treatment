@@ -44,26 +44,26 @@ export async function createMedicine(newMedicine: Medicine, selectedImage: Blob 
             if (uploadResponse.ok) {
                 const responseData = await uploadResponse.json();
                 imageURL = responseData.fileUrl;
+
+                const res = await fetch("/api/medicine", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ ...newMedicine, image: imageURL })
+                });
+
+                if (res.ok) {
+                    const responseData = await res.json();
+                    return responseData.createdMedicine as Medicine;
+                } else {
+                    console.error("Failed to create medicine:", res.statusText);
+                }
             } else {
                 throw new Error(`Failed to upload image: ${uploadResponse.statusText}`);
             }
         }
-
-        const res = await fetch("/api/medicine", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ ...newMedicine, image: imageURL })
-        });
-
-        if (res.ok) {
-            const responseData = await res.json();
-            return responseData.createdMedicine as Medicine;
-        } else {
-            console.error("Failed to create medicine:", res.statusText);
-            return null;
-        }
+        return null;
     } catch (error) {
         console.error("Error saving medicine:", error);
         return null;

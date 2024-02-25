@@ -7,9 +7,10 @@ import { Treatment } from "../../models/Treatment";
 interface ModalTreatmentProps {
     isOpen: boolean;
     onClose: () => void;
+    refreshData: () => void;
 }
 
-const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
+const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose, refreshData }) => {
     const [newItem, setNewItem] = useState<Treatment>({ treatment: '', price: 0 });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -19,6 +20,7 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose }) => {
                 await createTreatment(newItem);
                 setNewItem({ treatment: '', price: 0 });
                 onClose();
+                refreshData();
             }
         } catch (error) {
             console.error("Error saving treatment:", error);
