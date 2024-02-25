@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { deleteMedicine, getAllMedicines } from "@/controllers/medicineController";
 import { Medicine } from "@/models/Medicine";
 import { moneyFormatter } from "../../providers/Currency";
+import Loading from "@/components/Loading";
+import NoData from "@/components/No-Data";
 
 export default function Medicine() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -59,36 +61,42 @@ export default function Medicine() {
                 </Flex>
             </Box>
 
-            <SimpleGrid
-                marginTop={5}
-                columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-                spacingX='25px'
-                spacingY='20px'
-            >
-                {medicines.map((medicine, index) => (
-                    <Card key={index}>
-                        <CardBody>
-                            <Image src={medicine.image} borderRadius={5} alt="Image" w="100%" h={150} objectFit="cover" loading="lazy" />
-                            <Flex flexDir="column" marginY={2} gap={1}>
-                                <Text fontWeight="bold" fontSize={16}>{medicine.title}</Text>
-                                <Text fontWeight="medium" fontSize={14}>
-                                    {moneyFormatter(medicine.price, "IDR", 0)}
-                                </Text>
-                            </Flex>
-                            <Flex justifyContent="space-around" marginTop={2.5}>
-                                <Button backgroundColor="#4474f7" color="white" size="sm">
-                                    <FontAwesomeIcon icon={faPen} />
-                                    <Text ms={2}>Edit</Text>
-                                </Button>
-                                <Button backgroundColor="red" color="white" size="sm" onClick={handleDelete}>
-                                    <FontAwesomeIcon icon={faTrash} />
-                                    <Text ms={2}>Delete</Text>
-                                </Button>
-                            </Flex>
-                        </CardBody>
-                    </Card>
-                ))}
-            </SimpleGrid>
+            {loading ? (
+                <Loading />
+            ) : medicines.length === 0 ? (
+                <NoData />
+            ) :
+                <SimpleGrid
+                    marginTop={5}
+                    columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+                    spacingX='25px'
+                    spacingY='20px'
+                >
+                    {medicines.map((medicine, index) => (
+                        <Card key={index}>
+                            <CardBody>
+                                <Image src={medicine.image} borderRadius={5} alt="Image" w="100%" h={150} objectFit="cover" loading="lazy" />
+                                <Flex flexDir="column" marginY={2} gap={1}>
+                                    <Text fontWeight="bold" fontSize={16}>{medicine.title}</Text>
+                                    <Text fontWeight="medium" fontSize={14}>
+                                        {moneyFormatter(medicine.price, "IDR", 0)}
+                                    </Text>
+                                </Flex>
+                                <Flex justifyContent="space-around" marginTop={2.5}>
+                                    <Button backgroundColor="#4474f7" color="white" size="sm">
+                                        <FontAwesomeIcon icon={faPen} />
+                                        <Text ms={2}>Edit</Text>
+                                    </Button>
+                                    <Button backgroundColor="red" color="white" size="sm" onClick={handleDelete}>
+                                        <FontAwesomeIcon icon={faTrash} />
+                                        <Text ms={2}>Delete</Text>
+                                    </Button>
+                                </Flex>
+                            </CardBody>
+                        </Card>
+                    ))}
+                </SimpleGrid>
+            }
 
 
             <ModalMedicine isOpen={isOpen} onClose={onClose} />

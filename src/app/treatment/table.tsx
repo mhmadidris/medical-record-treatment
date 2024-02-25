@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { moneyFormatter } from "../../providers/Currency";
 import { getAllTreatments, deleteTreatment } from "@/controllers/treatmentController";
 import { Treatment } from "@/models/Treatment";
+import NoData from "@/components/No-Data";
+import Loading from "@/components/Loading";
 
 const TableTreatment: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -41,9 +43,9 @@ const TableTreatment: React.FC = () => {
     return (
         <>
             {loading ? (
-                <Text>Loading...</Text>
+                <Loading />
             ) : treatments.length === 0 ? (
-                <Text>No treatments available</Text>
+                <NoData />
             ) : (
                 <TableContainer
                     marginTop={5}

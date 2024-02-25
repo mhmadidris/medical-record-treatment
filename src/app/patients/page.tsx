@@ -10,6 +10,8 @@ import { useEffect, useRef, useState } from "react";
 import { Patient } from "@/models/Patient";
 import { deletePatient, getAllPatients } from "@/controllers/patientController";
 import { moneyFormatter } from "@/providers/Currency";
+import NoData from "@/components/No-Data";
+import Loading from "@/components/Loading";
 
 export default function Patients() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -68,9 +70,9 @@ export default function Patients() {
             </Box>
 
             {loading ? (
-                <Text>Loading...</Text>
+                <Loading />
             ) : patients.length === 0 ? (
-                <Text>No patients available</Text>
+                <NoData />
             ) :
                 <TableContainer
                     marginTop={5}

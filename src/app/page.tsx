@@ -1,29 +1,10 @@
-"use client"
-
-import { useEffect, useState } from "react";
-import { Treatment } from "../models/Treatment";
-import { getAllTreatments } from "../controllers/treatmentController";
+import { Box, Center, Flex, Image, Text } from "@chakra-ui/react"
 
 const Home = () => {
-  const [data, setData] = useState<Treatment[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const treatments = await getAllTreatments();
-      setData(treatments);
-    };
-
-    fetchData();
-  }, []);
-
   return (
-    <div>
-      {data.map((treatment) => (
-        <div key={treatment.id}>
-          <h1>{treatment.treatment}</h1>
-        </div>
-      ))}
-    </div>
+    <Center h="100vh">
+      <Text>Home</Text>
+    </Center>
   );
 };
 
