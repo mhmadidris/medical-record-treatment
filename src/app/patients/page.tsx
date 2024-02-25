@@ -1,7 +1,7 @@
 "use client"
 
 import LayoutPanel from "@/components/Layouts";
-import { Box, Button, Container, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Table, TableContainer, Tbody, Td, Text, Tfoot, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Table, TableContainer, Tbody, Td, Text, Tfoot, Th, Thead, Tr, useDisclosure, useToast } from "@chakra-ui/react";
 import ModalPatients from "./modal";
 import { faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +14,7 @@ import NoData from "@/components/No-Data";
 import Loading from "@/components/Loading";
 
 export default function Patients() {
+    const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { isOpen: isOpenDrawer, onOpen: onOpenDrawer, onClose: onCloseDrawer } = useDisclosure();
     const [loading, setLoading] = useState<boolean>(true);
@@ -43,10 +44,25 @@ export default function Patients() {
             const success = await deletePatient(patientId);
             if (success) {
                 setPatients(prevPatients => prevPatients.filter(patient => patient.id !== patientId));
-            }
 
+                toast({
+                    status: "success",
+                    title: "Patient",
+                    description: "Success delete patient",
+                    position: "top-right",
+                    isClosable: true,
+                });
+            }
             fetchPatients();
         } catch (error) {
+            toast({
+                status: "error",
+                title: "Patient",
+                description: "Failed delete patient",
+                position: "top-right",
+                isClosable: true,
+            });
+
             console.error("Error deleting patient:", error);
         }
     };

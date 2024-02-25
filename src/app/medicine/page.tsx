@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import LayoutPanel from "@/components/Layouts";
-import { Box, Button, Card, CardBody, Container, Flex, Image, Input, SimpleGrid, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, Container, Flex, Image, Input, SimpleGrid, Text, useDisclosure, useToast } from "@chakra-ui/react";
 import ModalMedicine from "./modal";
 import { faEye, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,6 +13,7 @@ import Loading from "@/components/Loading";
 import NoData from "@/components/No-Data";
 
 export default function Medicine() {
+    const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [loading, setLoading] = useState<boolean>(true);
     const [medicines, setMedicines] = useState<Medicine[]>([]);
@@ -38,9 +39,25 @@ export default function Medicine() {
             const success = await deleteMedicine(medicineId);
             if (success) {
                 setMedicines(prevMedicines => prevMedicines.filter(medicine => medicine.id !== medicineId));
+
+                toast({
+                    status: "success",
+                    title: "Medicine",
+                    description: "Success delete medicine",
+                    position: "top-right",
+                    isClosable: true,
+                });
             }
             fetchMedicines();
         } catch (error) {
+            toast({
+                status: "error",
+                title: "Medicine",
+                description: "Failed delete medicine",
+                position: "top-right",
+                isClosable: true,
+            });
+
             console.error("Error deleting medicine:", error);
         }
     };
@@ -83,11 +100,11 @@ export default function Medicine() {
                                     </Text>
                                 </Flex>
                                 <Flex justifyContent="space-around" marginTop={2.5}>
-                                    <Button backgroundColor="#4474f7" color="white" size="sm">
+                                    {/* <Button backgroundColor="#4474f7" color="white" size="sm">
                                         <FontAwesomeIcon icon={faPen} />
                                         <Text ms={2}>Edit</Text>
-                                    </Button>
-                                    <Button backgroundColor="red" color="white" size="sm" onClick={() => handleDelete(medicine.id)}>
+                                    </Button> */}
+                                    <Button backgroundColor="red" color="white" size="sm" w="100%" onClick={() => handleDelete(medicine.id)}>
                                         <FontAwesomeIcon icon={faTrash} />
                                         <Text ms={2}>Delete</Text>
                                     </Button>

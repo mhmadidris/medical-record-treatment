@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useToast } from "@chakra-ui/react";
 import React, { useState } from "react";
 import CurrencyInput from "react-currency-input-field";
 import { createTreatment } from "../../controllers/treatmentController";
@@ -11,6 +11,7 @@ interface ModalTreatmentProps {
 }
 
 const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose, refreshData }) => {
+    const toast = useToast();
     const [newItem, setNewItem] = useState<Treatment>({ treatment: '', price: 0 });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -20,9 +21,34 @@ const ModalTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose, refres
                 await createTreatment(newItem);
                 setNewItem({ treatment: '', price: 0 });
                 onClose();
+
+                toast({
+                    status: "success",
+                    title: "Treatment",
+                    description: "Success add treatment",
+                    position: "top-right",
+                    isClosable: true,
+                });
+
                 refreshData();
+            } else {
+                toast({
+                    status: "info",
+                    title: "Validation Form",
+                    description: "Please complete data",
+                    position: "top-right",
+                    isClosable: true,
+                });
             }
         } catch (error) {
+            toast({
+                status: "error",
+                title: "Treatment",
+                description: "failed add treatment",
+                position: "top-right",
+                isClosable: true,
+            });
+
             console.error("Error saving treatment:", error);
         }
     };

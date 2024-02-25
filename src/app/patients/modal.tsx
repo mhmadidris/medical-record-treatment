@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
+import { Box, Button, CircularProgress, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useToast } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import React, { useEffect, useState } from "react";
 import CurrencyInput from "react-currency-input-field";
@@ -18,6 +18,7 @@ interface ModalPatientsProps {
 }
 
 const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose, refreshData }) => {
+    const toast = useToast();
     const [treatments, setTreatments] = useState<Treatment[]>([]);
     const [medicines, setMedicines] = useState<Medicine[]>([]);
     const [newItem, setNewItem] = useState<Patient>({ patientID: '', patientName: '', date: new Date, treatmentIds: [], medicineIds: [], cost: 0 });
@@ -111,9 +112,34 @@ const ModalPatients: React.FC<ModalPatientsProps> = ({ isOpen, onClose, refreshD
                 });
                 setNewItem({ patientID: '', patientName: '', date: new Date(), treatmentIds: [], medicineIds: [], cost: 0 });
                 onClose();
+
+                toast({
+                    status: "success",
+                    title: "Patient",
+                    description: "Success add patient",
+                    position: "top-right",
+                    isClosable: true,
+                });
+
                 refreshData();
+            } else {
+                toast({
+                    status: "info",
+                    title: "Validation Form",
+                    description: "Please complete data",
+                    position: "top-right",
+                    isClosable: true,
+                });
             }
         } catch (error) {
+            toast({
+                status: "error",
+                title: "Patient",
+                description: "failed add patient",
+                position: "top-right",
+                isClosable: true,
+            });
+
             console.error("Error saving patient:", error);
         } finally {
             setIsLoading(false);

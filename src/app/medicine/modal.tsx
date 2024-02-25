@@ -15,7 +15,8 @@ import {
     ModalOverlay,
     Text,
     useNumberInput,
-    CircularProgress
+    CircularProgress,
+    useToast
 } from "@chakra-ui/react";
 import { createMedicine } from "@/controllers/medicineController";
 import { Medicine } from "@/models/Medicine";
@@ -27,6 +28,7 @@ interface ModalMedicineProps {
 }
 
 const ModalMedicine: React.FC<ModalMedicineProps> = ({ isOpen, onClose, refreshData }) => {
+    const toast = useToast();
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [selectedFileName, setSelectedFileName] = useState<string>('');
     const [newItem, setNewItem] = useState<Medicine>({ image: '', title: '', stock: 0, price: 0 });
@@ -52,9 +54,34 @@ const ModalMedicine: React.FC<ModalMedicineProps> = ({ isOpen, onClose, refreshD
                 setNewItem({ image: '', title: '', stock: 0, price: 0 });
                 setSelectedImage(null);
                 onClose();
+
+                toast({
+                    status: "success",
+                    title: "Medicine",
+                    description: "Success add medicine",
+                    position: "top-right",
+                    isClosable: true,
+                });
+
                 refreshData();
+            } else {
+                toast({
+                    status: "info",
+                    title: "Validation Form",
+                    description: "Please complete data",
+                    position: "top-right",
+                    isClosable: true,
+                });
             }
         } catch (error) {
+            toast({
+                status: "error",
+                title: "Medicine",
+                description: "failed add medicine",
+                position: "top-right",
+                isClosable: true,
+            });
+
             console.error("Error saving medicine:", error);
         } finally {
             setIsLoading(false);

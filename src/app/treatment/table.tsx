@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TableContainer, Table, Thead, Tr, Th, Tbody, Td, Flex, Button, Text } from "@chakra-ui/react";
+import { TableContainer, Table, Thead, Tr, Th, Tbody, Td, Flex, Button, Text, useToast } from "@chakra-ui/react";
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { moneyFormatter } from "../../providers/Currency";
@@ -16,6 +16,7 @@ interface ModalTreatmentProps {
 }
 
 const TableTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose, refreshData }) => {
+    const toast = useToast();
     const [loading, setLoading] = useState<boolean>(true);
     const [treatments, setTreatments] = useState<Treatment[]>([]);
 
@@ -40,9 +41,25 @@ const TableTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose, refres
             const success = await deleteTreatment(treatmentId);
             if (success) {
                 setTreatments(prevTreatments => prevTreatments.filter(treatment => treatment.id !== treatmentId));
+
+                toast({
+                    status: "success",
+                    title: "Treatment",
+                    description: "Success delete treatment",
+                    position: "top-right",
+                    isClosable: true,
+                });
             }
             fetchTreatments();
         } catch (error) {
+            toast({
+                status: "error",
+                title: "Treatment",
+                description: "Failed delete treatment",
+                position: "top-right",
+                isClosable: true,
+            });
+
             console.error("Error deleting treatment:", error);
         }
     };
@@ -85,9 +102,9 @@ const TableTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose, refres
                                     </Td>
                                     <Td width={{ base: '25%', md: '30%' }} fontWeight="bold" fontSize={14} textAlign="center" w={100}>
                                         <Flex justifyContent="center" gap={3}>
-                                            <Button backgroundColor="#5e8bf9" color="white" size="sm" colorScheme='teal'>
+                                            {/* <Button backgroundColor="#5e8bf9" color="white" size="sm" colorScheme='teal'>
                                                 <FontAwesomeIcon icon={faPen} />
-                                            </Button>
+                                            </Button> */}
                                             <Button backgroundColor="red" color="white" size="sm" onClick={() => handleDelete(treatment.id)}>
                                                 <FontAwesomeIcon icon={faTrash} />
                                             </Button>
