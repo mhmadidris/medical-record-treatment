@@ -24,7 +24,7 @@ const Home = () => {
       </Center>
 
       <Box bg="gray.200" py="3" px="6">
-        <Text fontSize="sm" color="gray.600">&copy; {new Date().getFullYear()} Medical Record tTreatment. All rights reserved.</Text>
+        <Text fontSize="sm" color="gray.600">&copy; {new Date().getFullYear()} Medical Record Treatment. All rights reserved.</Text>
       </Box>
     </Box>
   );

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import LayoutPanel from "@/components/Layouts";
-import { Box, Button, Card, CardBody, Container, Flex, Image, Input, SimpleGrid, Text, useDisclosure, useToast } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, Circle, Container, Flex, Image, Input, SimpleGrid, Text, useDisclosure, useToast } from "@chakra-ui/react";
 import ModalMedicine from "./modal";
 import { faEye, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -93,11 +93,16 @@ export default function Medicine() {
                         <Card key={index}>
                             <CardBody>
                                 <Image src={medicine.image} borderRadius={5} alt="Image" w="100%" h={150} objectFit="cover" loading="lazy" />
-                                <Flex flexDir="column" marginY={2} gap={1}>
-                                    <Text fontWeight="bold" fontSize={16}>{medicine.title}</Text>
-                                    <Text fontWeight="medium" fontSize={14}>
-                                        {moneyFormatter(medicine.price, "IDR", 0)}
-                                    </Text>
+                                <Flex justifyContent="space-between" alignItems="center">
+                                    <Flex flexDir="column" marginY={2} gap={1}>
+                                        <Text fontWeight="bold" fontSize={16}>{medicine.title}</Text>
+                                        <Text fontWeight="medium" fontSize={14}>
+                                            {moneyFormatter(medicine.price, "IDR", 0)}
+                                        </Text>
+                                    </Flex>
+                                    <Circle bg="#4474f7" size="30px" boxShadow="md">
+                                        <Text color="white" fontSize={12} fontWeight="bold">{medicine.stock}</Text>
+                                    </Circle>
                                 </Flex>
                                 <Flex justifyContent="space-around" marginTop={2.5}>
                                     {/* <Button backgroundColor="#4474f7" color="white" size="sm">
