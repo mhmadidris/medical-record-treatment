@@ -3,9 +3,12 @@
 import LayoutPanel from "@/components/Layouts";
 import { useDisclosure, Flex, Input, Button, Box } from "@chakra-ui/react";
 import TableTreatment from "./table";
+import { getAllTreatments } from "@/controllers/treatmentController";
+import { useState } from "react";
 
 export default function Treatment() {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [searchParam, searchQuery] = useState('');
 
     return (
         <LayoutPanel>
@@ -22,6 +25,8 @@ export default function Treatment() {
                         backgroundColor="white"
                         color="black"
                         shadow="xs"
+                        value={searchParam}
+                        onChange={(e) => searchQuery(e.target.value)}
                         marginBottom={{ base: 5, md: 0 }}
                     />
                     <Button
@@ -35,7 +40,7 @@ export default function Treatment() {
                 </Flex>
             </Box>
 
-            <TableTreatment isOpen={isOpen} onClose={onClose} />
+            <TableTreatment isOpen={isOpen} onClose={onClose} searchParam={searchParam} />
         </LayoutPanel>
     );
 }

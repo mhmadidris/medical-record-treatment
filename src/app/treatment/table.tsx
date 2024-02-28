@@ -12,22 +12,22 @@ import ModalTreatment from "./modal";
 interface ModalTreatmentProps {
     isOpen: boolean;
     onClose: () => void;
-    refreshData?: () => void;
+    searchParam?: string;
 }
 
-const TableTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose, refreshData }) => {
+const TableTreatment: React.FC<ModalTreatmentProps> = ({ isOpen, onClose, searchParam }) => {
     const toast = useToast();
     const [loading, setLoading] = useState<boolean>(true);
     const [treatments, setTreatments] = useState<Treatment[]>([]);
 
     useEffect(() => {
         fetchTreatments();
-    }, []);
+    }, [searchParam]);
 
     const fetchTreatments = async () => {
         try {
             setLoading(true);
-            const treatmentsData = await getAllTreatments();
+            const treatmentsData = await getAllTreatments(searchParam);
             setTreatments(treatmentsData);
             setLoading(false);
         } catch (error) {

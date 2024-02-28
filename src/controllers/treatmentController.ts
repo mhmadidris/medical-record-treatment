@@ -1,8 +1,8 @@
 import { Treatment } from "../models/Treatment";
 
-export async function getAllTreatments(): Promise<Treatment[]> {
+export async function getAllTreatments(searchParam?: string): Promise<Treatment[]> {
     try {
-        const res = await fetch("/api/treatment");
+        const res = await fetch(`/api/treatment?search=Paramedical`);
         const responseData = await res.json();
         return responseData.treatments as Treatment[];
     } catch (error) {
